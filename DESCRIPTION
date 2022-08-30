@@ -17,3 +17,5 @@ Imports:
     ggiraph,
     ggplot2,
     rlang
+URL: https://github.com/selkamand/oncoplotgg
+BugReports: https://github.com/selkamand/oncoplotgg/issues

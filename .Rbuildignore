@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^oncoplotgg\.Rproj$
+^LICENSE\.md$
+^README\.Rmd$
+inst/testdata/ignore

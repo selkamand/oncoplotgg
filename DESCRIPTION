@@ -8,14 +8,17 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Imports: 
     assertthat,
     cli,
+    cowplot,
     dplyr,
     forcats,
     ggiraph,
     ggplot2,
-    rlang
+    RColorBrewer,
+    rlang,
+    scales
 URL: https://github.com/selkamand/oncoplotgg
 BugReports: https://github.com/selkamand/oncoplotgg/issues

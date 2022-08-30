@@ -17,7 +17,8 @@ ggoncoplot(
   interactive_svg_height = 6,
   genes_to_include = NULL,
   xlab_title = "Sample",
-  ylab_title = "Gene"
+  ylab_title = "Gene",
+  sample_annotation_df = NULL
 )
 }
 \arguments{
@@ -42,7 +43,13 @@ ggplot or ggiraph object if \code{interactive=TRUE}
 GG oncoplot
 }
 \examples{
+GBM
 gbm_csv <- system.file(package='oncoplotgg', "testdata/GBM_tcgamutations_mc3_maf.csv")
 gbm_df <- read.csv(file = gbm_csv, header=TRUE)
-ggoncoplot(gbm_df, 'Hugo_Symbol', 'Tumor_Sample_Barcode')
+ggoncoplot(gbm_df, 'Hugo_Symbol', 'Tumor_Sample_Barcode', col_mutation_type = 'Variant_Classification')
+
+# BRCA
+brca_csv <- system.file(package='oncoplotgg', "testdata/BRCA_tcgamutations_mc3_maf.csv")
+brca_df <- read.csv(file = brca_csv, header=TRUE)
+ggoncoplot(brca_df, 'Hugo_Symbol', 'Tumor_Sample_Barcode', col_mutation_type = 'Variant_Classification')
 }

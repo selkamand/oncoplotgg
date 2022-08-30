@@ -36,12 +36,20 @@ ggoncoplot <- function(data_main, col_genes, col_samples, col_mutation_type = NU
   # Check specified columns are in data_main
   data_main_colnames <- names(data_main)
 
-  check_valid_dataframe_column(data = data_main, colname = col_genes)
-  check_valid_dataframe_column(data = data_main, colname = col_samples)
-  check_valid_dataframe_column(data = data_main, colname = col_tooltip)
-  if (!is.null(col_mutation_type)) check_valid_dataframe_column(data = data_main, colname = col_mutation_type)
-  check_valid_dataframe_column(data = data_main, colname = col_genes)
+  check_valid_dataframe_column(
+    data = data_main,
+    colnames = c(
+      col_samples,
+      col_genes,
+      col_tooltip
+    )
+  )
 
+  # Check optional columns are in data_main
+  if (!is.null(col_mutation_type))
+    check_valid_dataframe_column(data = data_main, colnames = col_mutation_type)
+
+  # Ensure Sample Column is A factor
   data_main[[col_samples]] <- as.factor(data_main[[col_samples]])
 
   # Look exclusively at a custom set of genes
@@ -240,17 +248,20 @@ theme_oncoplot_default <- function(...){
     )
 }
 
-check_valid_dataframe_column <- function(data, colname, error_call = rlang::caller_env()){
-  colnames = colnames(data)
+check_valid_dataframe_column <- function(data, colnames, error_call = rlang::caller_env()){
+  data_colnames = colnames(data)
 
-  if(!colname %in% colnames){
-    cli::cli_abort(
-      c(
-        '!' = 'Could find column: {colname} in data_main.',
-        '!' = 'Please select one of [{colnames}]'
+  for (colname in colnames){
+    if(!colname %in% data_colnames){
+      cli::cli_abort(
+        c(
+          '!' = 'Could find column: [{colname}] in input data',
+          '!' = 'Please select one of [{data_colnames}]'
+        )
       )
-    )
+    }
   }
+
 }
 # devtools::load_all();brca_csv <- system.file(package='oncoplotgg', "testdata/BRCA_tcgamutations_mc3_maf.csv")
 # brca_df <- read.csv(file = brca_csv, header=TRUE)

@@ -40,7 +40,8 @@ gg_sample_annotation <- function(data, col_sample, col_sort, interactive = TRUE,
     numerical = 'integer',
     numerical = 'numeric',
     categorical='character',
-    categorical='factor'
+    categorical='factor',
+    categorical='logical'
   )
 
   if(any(!data_column_classes %in% supported_data_classes)){
@@ -63,7 +64,7 @@ gg_sample_annotation <- function(data, col_sample, col_sort, interactive = TRUE,
 
   # Now before we plot, lets sort samples based on `col_sort`
   # If col_sort is numeric, lets sort directly on the number
-
+  #browser()
   sample_order_ranks =  heirarchical_ranking(data[col_sort])
   data[[col_sample]] <- forcats::fct_reorder(data[[col_sample]], .x = sample_order_ranks, .desc = TRUE)
 
@@ -76,14 +77,19 @@ gg_sample_annotation <- function(data, col_sample, col_sort, interactive = TRUE,
     # Categorical Data
     if(current_col_data_class == "categorical"){
       nlevels = dplyr::n_distinct(data[[current_col]])
-
+      scale_fill <- ggplot2::scale_fill_discrete()
       showlegend=TRUE
 
       # Hide legend if there are too many levels
       if(nlevels > 6)
         showlegend=FALSE
 
-      #browser()
+      if(is.logical(data[[current_col]])){
+        showlegend=FALSE
+        scale_fill <- ggplot2::scale_fill_manual(values = c("TRUE" = "darkblue", "FALSE" = "lightgrey"))
+      }
+
+
       gglist[[current_col]] <- (
         ggplot2::ggplot(
           data,
@@ -101,8 +107,8 @@ gg_sample_annotation <- function(data, col_sample, col_sort, interactive = TRUE,
           sample_annotations_theme(legend.show = showlegend) +
           #ggplot2::xlab(NULL) +
           ggplot2::ylab(current_col) +
-          ggplot2::guides(fill = ggplot2::guide_legend(keywidth = 0.2, keyheight = .5, label.theme = ggplot2::element_text(size = 8)))
-
+          ggplot2::guides(fill = ggplot2::guide_legend(keywidth = 0.2, keyheight = .5, label.theme = ggplot2::element_text(size = 8))) +
+          scale_fill
       )
     }
     # Numerical Data
@@ -189,6 +195,7 @@ heirarchical_ranking <- function(data_ls){
     data_ls <- as.list(data_ls)
   }
 
+  #browser()
   # Check list length
   ncols = length(data_ls)
 
@@ -203,7 +210,7 @@ heirarchical_ranking <- function(data_ls){
 
   # Refactor any categorical variables in order of sequence
   data_ls <- lapply(data_ls, FUN = function(vec){
-    if(!is.numeric(vec)){
+    if(!is.numeric(vec) & !is.logical(vec)){
       return(forcats::fct_rev(forcats::fct_infreq(vec)))
     }
     else
@@ -241,3 +248,6 @@ heirarchical_ranking <- function(data_ls){
 # devtools::load_all();brca_metadata_csv <- system.file(package='oncoplotgg', "testdata/BRCA_tcgamutations_mc3_clinicaldata.csv")
 # brca_metadata_df <- read.csv(file = brca_metadata_csv, header=TRUE)
 # gg_sample_annotation(brca_metadata_df, 'Tumor_Sample_Barcode', col_sort = c("vital_status", "breast_carcinoma_estrogen_receptor_status"))
+
+
+
